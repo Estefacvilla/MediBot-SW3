@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./images/logo.jpg";
+import icon_whatsapp from "./images/icon_whatsapp.png";
+import "./App.css";
 
 function App() {
+  const numero = "+573005186859";
+  const texto = "Hola, quiero información";
+  const url = `https://wa.me/${numero}?text=${texto}`;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className="home-page">
+      <header className="header">
+        <img src={logo} alt="Logo de MediBot" className="logo" />
+        <h1>Bienvenido a MediBot</h1>
       </header>
+      <main className="main">
+        <p className="slogan">
+          Tu asistente médico personal para agendar citas médicas de manera
+          sencilla y conveniente.
+        </p>
+        <a aria-label="Chat on WhatsApp" href={url}>
+          <img alt="Chat on WhatsApp" src={icon_whatsapp} />
+        </a>
+      </main>
+      <footer className="footer">
+        <p>¡Cuida tu salud con MediBot!</p>
+      </footer>
     </div>
   );
 }
