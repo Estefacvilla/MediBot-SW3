@@ -20,19 +20,29 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(12px + 2vmin);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.Generate-button {
+  background-color: #61dafb;
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Generate-button:hover {
+  background-color: #4fa3d8;
+}
+
+#password {
+  margin-top: 20px;
+  font-size: 20px;
+  border: none;
+  padding: 10px;
+  text-align: center;
+  background-color: #f0f0f0;
 }
