@@ -7,16 +7,15 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          MediBot
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <div className="chat-input">
+          <input
+            type="text"
+            placeholder="Type your message..."
+          />
+          <button>Send</button>
+        </div>
       </header>
     </div>
   );
