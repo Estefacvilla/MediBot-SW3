@@ -14,7 +14,7 @@ function App() {
             type="text"
             placeholder="Type your message..."
           />
-          <button>Send</button>
+          <button>Enviar</button>
         </div>
       </header>
     </div>
