@@ -55,7 +55,7 @@ function App() {
         <div className="Clock">
           <p>{currentTime}</p> {/* Muestra la hora actual */}
         </div>
-        <h1>Mi Generador de Contraseñas</h1>
+        <h1>Mi Generador de Monica</h1>
         <p>¡Genera contraseñas seguras con un solo clic!</p>
         <button className="Generate-button" onClick={generatePassword}>Generar Contraseña</button>
         <input
