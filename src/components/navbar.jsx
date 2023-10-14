@@ -52,7 +52,7 @@ function Navbar() {
         <div className="line2"></div>
         <div className="line3"></div>
       </div>
-        <button className="nav__button">Click Me</button>
+        <button className="nav__button">Programa HOY tu valoración</button>
     </nav>
   );
 }

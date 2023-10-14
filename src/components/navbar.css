@@ -26,12 +26,12 @@ a{
 }
 .nav__button {
     border: 2px solid #1e330f; /* Green border */
-    background-color: transparent;
+    background-color: #1e330f;
     justify-content: right;
     border-radius: 5px; /* Rounded corners */
     padding: 5px 10px; /* Add some padding for a button-like appearance */
     margin-right: 2px; /* Adjust the spacing as needed */
-    color: #65B22E; /* Text color */
+    color: #cac9c9; /* Text color */
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
