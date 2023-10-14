@@ -52,9 +52,10 @@ function Navbar() {
         <div className="line2"></div>
         <div className="line3"></div>
       </div>
-        <button className="nav__button">Programa HOY tu valoración</button>
+      <div>
+        <button className="nav__button">Programa HOY<br></br>tu valoración</button>
+      </div>
     </nav>
   );
 }
-
 export default Navbar;
