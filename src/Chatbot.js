@@ -6,7 +6,7 @@ function Chatbot() {
         <df-messenger
             intent="WELCOME"
             chat-title="MediBot"
-            agent-id="c26f8455-93b6-4d8a-90b7-3523e6379e97"
+            agent-id="8a607da7-fffe-4202-95c2-b4ee10f31dcf"
             language-code="es"
         ></df-messenger>
     );
