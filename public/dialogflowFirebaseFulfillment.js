@@ -146,6 +146,61 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
       });
   }
 
+/**
+   * Registra un paciente nuevo
+   */
+  function registrarPaciente(agent) {
+    const documentoPaciente = agent.parameters.documentoPaciente;
+    const nombrePaciente = agent.parameters.nombrePaciente;
+    const correoPaciente = agent.parameters.correoPaciente;
+    const direccionPaciente = agent.parameters.direccionPaciente;
+    const telefonoPaciente = agent.parameters.telefonoPaciente;
+    const estadoCivilPaciente = agent.parameters.estadoCivilPaciente;
+    const ocupacionPaciente = agent.parameters.ocupacionPaciente;
+    const rhPaciente = agent.parameters.rhPaciente;
+    const epsPaciente = agent.parameters.epsPaciente;
+
+    return db.collection('paciente').add({
+      documento: documentoPaciente,
+      nombre: nombrePaciente,
+      correo: correoPaciente,
+      direccion: direccionPaciente,
+      telefono: telefonoPaciente,
+      estadoCivil: estadoCivilPaciente,
+      ocupacion: ocupacionPaciente,
+      rh: rhPaciente,
+      eps: epsPaciente
+    })
+      .then(() => {
+        // Esto se ejecuta si se agregó correctamente el documento.
+        agent.add(`El paciente ${nombrePaciente} con documento ${documentoPaciente} ha sido registrado correctamente.\n ¿Quieres pedir una cita?`);
+        const payload = {
+          "richContent": [
+            [
+              {
+                "type": "chips",
+                "options": [
+                  { "text": "Sí, quiero pedir una cita." },
+                  { "text": "No." }
+                ]
+              }
+            ]
+          ]
+        };
+        agent.add(new Payload(agent.UNSPECIFIED, payload, { rawPayload: true, sendAsMessage: true }));
+
+        // Actualiza el documento para pedir la nueva cita
+        db.collection('nuevaCita').doc('nuevaCita').update({
+          documentoPaciente: documentoPaciente
+        });
+
+      })
+      .catch(error => {
+        // Esto se ejecuta si hubo un error al agregar el documento.
+        console.error("Error al registrar al paciente:", error);
+        agent.add("Lo siento, ha ocurrido un error al tratar de registrar al paciente.");
+      });
+  }
 
 
   let intentMap = new Map();
@@ -155,6 +210,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('mostrarHorarioConsultorio', mostrarHorarioConsultorio);
   intentMap.set('mostrarTelefonoConsultorio', mostrarTelefonoConsultorio);
   intentMap.set('mostrarInfoConsultorio', mostrarInfoConsultorio);
+  intentMap.set('registrarPaciente', registrarPaciente);
 
   agent.handleRequest(intentMap);
 });
