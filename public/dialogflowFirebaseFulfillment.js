@@ -201,6 +201,109 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         agent.add("Lo siento, ha ocurrido un error al tratar de registrar al paciente.");
       });
   }
+  
+  // Update by Juan G 
+  function registrarCita(agent) {
+
+    let especialidad = "";
+    const contexto = agent.getContext('seleccion_especialidad');
+    if (contexto) {
+      especialidad = agent.query;
+    }
+
+    return db.collection('agenda').get()
+      .then(snapshot => {
+        if (snapshot.empty) {
+          agent.add('No hay información disponible.');
+          return;
+        }
+
+        agent.setContext({
+          name: 'seleccion_cita',
+          lifespan: 5,
+          parameters: {}
+        });
+
+        const options = [];
+        snapshot.forEach(doc => {
+          const horarioData = doc.data();
+          if (horarioData.disponible) {
+            if (especialidad && horarioData.especialidad == especialidad) {
+              options.push({
+                text: `${horarioData.especialidad}, ${horarioData.especialista}, ${horarioData.fecha}, ${horarioData.hora}`
+              });
+            }
+          }
+        });
+
+        if (options.length > 0) {
+          agent.add(`Selecciona uno de nuestros horarios disponibles.`);
+          const payload = {
+            "richContent": [
+              [
+                {
+                  "type": "chips",
+                  "options": options
+                }
+              ]
+            ]
+          };
+          agent.add(new Payload(agent.UNSPECIFIED, payload, { rawPayload: true, sendAsMessage: true }));
+        } else {
+          agent.add(`En el momento no tenemos agenda disponible.`);
+        }
+      })
+      .catch(error => {
+        console.error('Error al acceder a Firestore:', error);
+        agent.add('Ocurrió un error al obtener la información.');
+      });
+  }
+
+
+  /**
+   * Guarda la información de la nueva cita en la bd
+   */
+  function manejarSeleccionCita(agent) {
+
+    const contexto = agent.getContext('seleccion_cita');
+    if (contexto) {
+      let cita = agent.query.split(",");
+      let documentoPaciente = "";
+
+      return db.collection('nuevaCita').doc('nuevaCita').get()
+        .then(doc => {
+          if (doc.exists) {
+            documentoPaciente = doc.data().documentoPaciente;
+
+            return db.collection('cita').add({
+              documentoPaciente: documentoPaciente,
+              especialidad: cita[0],
+              especialista: cita[1],
+              fecha: `${cita[2]}, ${cita[3]}`,
+              hora: cita[4]
+            })
+              .then(() => {
+                agent.add(`Cita registrada \n ${cita.join(", ")} \n con el documento ${documentoPaciente}`);
+              })
+              .catch(error => {
+                console.error("Error al registrar al paciente:", error);
+                agent.add("Lo siento, ha ocurrido un error al tratar de registrar al paciente.");
+              });
+
+          } else {
+            agent.add('No se encontró el documento del paciente.');
+          }
+        })
+        .catch(error => {
+          console.error('Error al obtener el documento:', error);
+          agent.add('Ocurrió un error al intentar obtener el documento del paciente.');
+        });
+
+    } else {
+      agent.add('Hubo un error al registrar la cita.');
+    }
+  }
+
 
 
   let intentMap = new Map();
@@ -211,7 +314,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('mostrarTelefonoConsultorio', mostrarTelefonoConsultorio);
   intentMap.set('mostrarInfoConsultorio', mostrarInfoConsultorio);
   intentMap.set('registrarPaciente', registrarPaciente);
-
+  intentMap.set('registrarCita', registrarCita); // Update by Juan G
+  intentMap.set('manejarSeleccionCita', manejarSeleccionCita); // Update by Juan G
   agent.handleRequest(intentMap);
 });
 
