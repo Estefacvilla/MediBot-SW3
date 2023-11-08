@@ -1,5 +1,9 @@
+
 import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Navbar from './components/navbar';
+import Body from './components/body';
+import Chatbot from './Chatbot';
 
 function App() {
   const numero = "+573005186859";
