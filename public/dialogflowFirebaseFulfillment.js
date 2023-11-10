@@ -201,105 +201,6 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         agent.add("Lo siento, ha ocurrido un error al tratar de registrar al paciente.");
       });
   }
-  /**
-   * Consulta si un paciente ya está registrado, si lo está procede a pedir la cita, si no lo esta lo registra.
-   */
-  function consultarPaciente(agent) {
-    const documentoPaciente = agent.parameters.documentoPaciente;
-
-    return db.collection('paciente').get()
-      .then(snapshot => {
-        if (snapshot.empty) {
-          agent.add('No hay información disponible.');
-          return;
-        }
-        let paciente = null;
-        snapshot.forEach(doc => {
-          const pacienteData = doc.data();
-          if (pacienteData.documento == documentoPaciente) {
-            paciente = pacienteData;
-          }
-        });
-        if (paciente) {
-          agent.add(`Hola ${paciente.nombre}, es un gusto atenderte. ¿Quieres pedir una cita?`);
-          const payload = {
-            "richContent": [
-              [
-                {
-                  "type": "chips",
-                  "options": [
-                    { "text": "Sí, quiero pedir una cita." },
-                    { "text": "No." }
-                  ]
-                }
-              ]
-            ]
-          };
-          agent.add(new Payload(agent.UNSPECIFIED, payload, { rawPayload: true, sendAsMessage: true }));
-
-          // Actualiza el documento para pedir la nueva cita
-          db.collection('nuevaCita').doc('nuevaCita').update({
-            documentoPaciente: documentoPaciente
-          });
-
-        } else {
-          agent.add(`El documento ${documentoPaciente}, no se encuentra registrado. ¿Quieres registrarte?`);
-          const payload = {
-            "richContent": [
-              [
-                {
-                  "type": "chips",
-                  "options": [
-                    { "text": "Sí, quiero registrarme." },
-                    { "text": "No." }
-                  ]
-                }
-              ]
-            ]
-          };
-          agent.add(new Payload(agent.UNSPECIFIED, payload, { rawPayload: true, sendAsMessage: true }));
-        }
-      })
-      .catch(error => {
-        console.error('Error al acceder a Firestore:', error);
-        agent.add('Ocurrió un error al obtener la información.');
-      });
-  }
-
-  function registrarEspecialidad(agent) {
-
-    agent.setContext({
-      name: 'seleccion_especialidad',
-      lifespan: 5,
-      parameters: {}
-    });
-
-    agent.add(`Selecciona una de nuestras especialidades.`);
-    const payload = {
-      "richContent": [
-        [
-          {
-            "type": "chips",
-            "options": [
-              {
-                "text": "Ortodoncia"
-              },
-              {
-                "text": "Rehabilitación oral"
-              },
-              {
-                "text": "Cirugía maxilofacial"
-              },
-              {
-                "text": "Odontología general"
-              }
-            ]
-          }
-        ]
-      ]
-    };
-    agent.add(new Payload(agent.UNSPECIFIED, payload, { rawPayload: true, sendAsMessage: true }));
-  }
 
 
   let intentMap = new Map();
@@ -310,8 +211,6 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('mostrarTelefonoConsultorio', mostrarTelefonoConsultorio);
   intentMap.set('mostrarInfoConsultorio', mostrarInfoConsultorio);
   intentMap.set('registrarPaciente', registrarPaciente);
-  intentMap.set('consultarPaciente', consultarPaciente);
-  intentMap.set('registrarEspecialidad', registrarEspecialidad);
 
   agent.handleRequest(intentMap);
 });
