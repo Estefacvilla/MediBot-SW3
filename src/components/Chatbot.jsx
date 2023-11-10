@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import './Chatbot.css'; 
+import React from 'react';
+import '../styles/chatbot.css'; 
 
 function Chatbot() {
     return (

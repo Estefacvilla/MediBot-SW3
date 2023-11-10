@@ -1,9 +1,8 @@
 
-import logo from './logo.svg';
 import React from 'react';
-import Navbar from './components/navbar';
-import Body from './components/body';
-import Chatbot from './Chatbot';
+import Navbar from './components/Navbar';
+import Body from './components/Body';
+import Chatbot from './components/Chatbot';
 
 function App() {
   return (
