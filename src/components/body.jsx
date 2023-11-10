@@ -1,6 +1,6 @@
 import React from 'react';
-import './body.css';
-import smile from '../assets/agmLandPic.png';
+import '../styles/body.css';
+import smile from '../images/agmLandPic.png';
 
 function Body() {
     return (
